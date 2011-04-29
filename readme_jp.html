@@ -1,0 +1,224 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0//EN"> 
+<html lang="ja-JP">
+<head>
+	<meta http-equiv=Content-Type Content="text/html;charset=Shift_JIS">
+	<link rel="stylesheet" type="text/css" href="tools.css">
+	<title>午後のこ～だ</title>
+	<script language="javascript" type="text/javascript" src="dec.js"></script>
+</head>
+<body>
+<div class="head" align="center">
+	<br>
+	<font size="4">
+		<div align="center">午後のこ～だ ver. 3.13 for Windows, Linux and OS/2</div>
+	</font>
+	<font size="2">
+		<div align="right">updated 2004/5/20</div><br>
+	</font>
+</div>
+<br>
+
+<pre>
+ ◆ 概要
+
+  wavデータを[ISO/IEC 11172]MPEG規格にて定められた音声データに変換します。
+  いわゆるmp3エンコーダです。
+
+  LAME 3.88を元に Enhanced 3D Now!, SSE, SSE2等最新のCPU命令や
+  マルチCPUに対応しています。
+
+  現在は旧gogo.dllとそれなりに互換性がありますが、マルチスレッド用APIは
+  非互換になる予定です(ある程度の互換性は残してあります)。
+  αはぼちぼちとりますが旧午後ほど厳密な動作チェックはしていません。
+
+ ◆ 午後2との違い
+
+   petit(gogo ver 3.x) と gogo2(ver 2.x) とでは -nopsy 指定時の意味が違います。
+   gogo2 -nopsy に相当するオプションは現在 petit にはありません(petit では常に
+   心理解析を行います)。
+   petit -nopsy は gogo2 で -nopsy を指定しない(心理解析あり)モードに相当します。
+   gogo2 で -nopsy を指定しないよりは petit -nopsy の方が大抵高音質/高速です。
+   VBRエンコードも petit の方がずっと速く高音質です。ある程度のバグもとれました。
+
+ ◆ News
+
+   サンプリングレートコンバータ追加。
+   SSE用コードを微妙に高速化(0.4%くらい?)
+
+ ◆ LGPL2 (GNU Library General Public License Ver.2)
+
+  このプログラムはフリーソフトであり、無保証です。
+  LGPL2に基づいてこのプログラムを変更して配布する(商業利用を含む)ことが
+  出来ます。
+  ただしmp3の基本特許はFhGなどのいくつかの会社で持っていますのでバイナリ
+  を配布するときは各自がよく調べて自己の責任において行ってください。
+  また次のことにも注意してください。
+
+  1. gogo.dll(またはそれに準ずるもの)を添加することが出来る。
+  2. gogo.dll以外には gogo.h 等のインタフェース部分を記述する目的以外の
+     gogoに関連するソースを使うことは出来ない。
+  3. gogoに関するどんな修正もLGPL2に基づいて公開されなければならない。
+  4. プログラムの中で次のことを表記して下さい。
+     gogoを使っていることと、gogoのバージョン。
+     gogoがLGPL2に従っていること。
+     gogoのソースか、ソース配布元のURL。
+  5. LGPL2のコピーを同封すること。
+
+ ◆ 使い方 
+
+  1. WindowsDLL版の場合
+
+  本ソースコードをコンパイルすると生成される "gogo.dll"を
+  午後のこ～だのWindowsGUI と同じディレクトリに入れてください。
+  場合によっては旧gogo.dllを上書きする形になると思います。
+
+　なお、旧DLLに組み込まれていたいくつかの機能が未実装です。
+
+　2. Linux/Windowsコンソール版の場合
+
+  gogo [options] input [output]      `[]'は省略可能の意味
+
+  `input'は入力ファイル名、`output'は出力ファイル名を指定して下さい。
+
+  出力ファイル名を省略した場合は、入力ファイル名の拡張子を`mp3'に変更した
+  名前が指定されたものとして処理されます。
+
+  オプションはファイル名の後ろにつけることも可能です。
+
+  オプション無しで起動すると使い方が表示されます。
+  その他はソースを参照してください。
+
+ ◆ コンパイル方法
+
+  いずれの環境でもうるり氏によるSSE2対応パッチを当てたNASMが必要です。
+  >http://ww1.tiki.ne.jp/~hino/nasmw098_sse2.zip (ソースとWindows用バイナリ)
+  >http://homepage1.nifty.com/herumi/soft/petit/nasmsse2.zip (Linux用バイナリ)
+
+  1.Windows環境でコンパイルする場合
+
+  もしあなたが読んでいるこのファイルの文字コードがEUCで改行コードがLFの場合、
+  これはきっとLinux用にアーカイブされた午後のこ～だです。
+  といっても違うのは文字コードと改行コードだけ。
+  nkfなどで全てのファイルの文字コートと改行コードをシフトJIS/CRLFに変換してから
+  下記の作業を行ってください。
+
+  VCを使う場合、SP4以上が必要です。
+  >http://msdn.microsoft.com/visualc/prodinfo/purchase/default.asp
+  gogo.dswを開いてコンパイルして下さい。
+
+  BCCを使う場合、Ver.5.5以上が必要です。
+  > cd win
+  > make -f Makefile.bcc
+   または
+  > make -f Makefile_dll.bcc
+
+  MINGWを使う場合、Ver.2.95.2-1以上が必要です。
+  > cd win
+  > make -f Makefile.mingw
+   または
+  > make -f Makefile_dll.mingw
+
+  2.Linux環境でコンパイルする場合
+
+  もしあなたが読んでいるこのファイルの文字コードがシフトJISで改行コード
+  がCR+LFの場合、これはきっとWindows用にアーカイブされた午後のこ～だです。
+  といっても違うのは文字コードと改行コードだけ。
+  nkfなどで全てのファイルの文字コートと改行コードをEUC/LFに変換してから
+  下記の作業を行ってください。
+
+  % cd linux
+  % make
+
+ ◆ 主なオプション解説
+
+ -a         ABR指定。
+ -b kbps    kbps単位でのビットレート指定
+            省略時は128[kbps]です。
+            値が大きいほど高音質になりますが、圧縮率は下がります。
+ -v [0-9]   VBR指定
+            値が小さいほど高音質になりますが、エンコード時間は長くなります。
+
+ -q [0-9]   音質設定(デフォルト 5)
+            値が小さいほど高音質になります。-nopsy は -q 8に相当します。 
+
+ ◆ 圧縮率一覧(44.1kHz, stereo)
+
+ ABR/CBR   | VBR      | compression | 128MB      | CD-R 650MB  | CD-R 700MB
+  bit rate |  quality |  ratio      |   記録時間 |   記録時間  |   記録時間 
+-----------+----------+-------------+------------+-------------+-------------
+        96 |          |     14.7000 | 3h 06m 25s | 15h 47m 12s | 17h 04m 00s
+           |        9 |     14      | 2h 57m 32s | 15h 02m 06s | 16h 15m 14s
+           |        8 |     13      | 2h 44m 51s | 13h 57m 40s | 15h 05m 35s
+       112 |          |     12.6000 | 2h 39m 47s | 13h 31m 53s | 14h 37m 43s
+           |        7 |     12      | 2h 32m 10s | 12h 53m 13s | 13h 55m 55s
+       128 |          |     11.0250 | 2h 19m 49s | 11h 50m 24s | 12h 48m 00s
+           |        6 |     11      | 2h 19m 30s | 11h 48m 47s | 12h 46m 16s
+           |        5 |     10      | 2h 06m 49s | 10h 44m 21s | 11h 36m 36s
+           |        4 |      9      | 1h 54m 08s |  9h 39m 55s | 10h 26m 56s
+       160 |          |      8.8200 | 1h 51m 51s |  9h 28m 19s | 10h 14m 24s
+           |        3 |      8      | 1h 41m 27s |  8h 35m 29s |  9h 17m 17s
+       192 |          |      7.3500 | 1h 33m 12s |  7h 53m 36s |  8h 32m 00s
+           |        2 |      7      | 1h 28m 46s |  7h 31m 03s |  8h 07m 37s
+       224 |          |      6.3    | 1h 19m 53s |  6h 45m 57s |  7h 18m 51s
+           |        1 |      6      | 1h 16m 05s |  6h 26m 37s |  6h 57m 58s
+       256 |          |      5.5125 | 1h 09m 54s |  5h 55m 12s |  6h 24m 00s
+           |        0 |      5      | 1h 03m 24s |  5h 22m 11s |  5h 48m 18s
+       320 |          |      4.4100 | 0h 55m 55s |  4h 44m 10s |  5h 07m 12s
+
+ ※ 記録時間はあくまで期待値です。実際はこれより短くなります。
+ ※ VBR時の圧縮率は曲により増減します。
+ ※ 圧縮比は圧縮の品質を表わしているわけではありません。
+    例)CBRよりVBRの方が圧縮の品質が高い＝同一音質なら高圧縮率を実現可能
+
+ ◆謝辞
+
+  午後の元となっているLAMEを作っている方々に感謝します。
+  音質、速度共に素晴らしいソフトウェアです。
+
+  午後は
+  様々なOSに対応したアセンブラ NASM(http://www.web-sites.co.uk/nasm/),
+  C言語とアセンブリ言語との連携を容易にするために
+  doxygen(http://www.stack.nl/~dimitri/doxygen/),
+  ruby(http://www.ruby-lang.org/),
+  MoonWolf氏作のhtmlsplit.rb(http://www.moonwolf.com/ruby/),
+  を利用しています。彼らに感謝します。
+
+  * MoonWolf氏(<script language="javascript"><!--// 
+	d("sHuHuHtHfIuHrHlHxExHdIhHhItFsHuHuHtHfIuHrHlHbFiHuHsH"); 
+//--></script>)のhtmlsplit.rbの配布ライセンスは
+    Rubyと同じです。
+
+ ◆最新版
+
+  http://www.marinecat.net/
+  http://homepage2.nifty.com/kei-i/
+
+  に置く予定です。
+
+ ◆ 参考
+
+  LAMEのソース(ver. 3.88) http://www.mp3dev.org/mp3/
+
+  ISO規格書(ISO/IEC 11172-3 Part3 : Audio)
+  "ISO MPEG Audio Subgroup Software Simulation Group" sources
+
+  その他 Intel, AMDのCPU関連リファレンス
+
+  <hr width="80%">
+
+    (C)2001-2004  ISO MPEG Audio Subgroup Software Simulation Group
+    (C)2001-2004  LAMEに携わっている人達
+    (C)2001-2004  午後開発者たち
+
+    <script language="javascript"><!--// 
+	d("qEnEeFdFhFoFqEnEeFdFeFoFqEnEeFeFhFoFqEnEeFeFkFoFqEnEeFdFmFoFqEnEeFdFiFoFqEnEjFhFoFqEnEeFeFdFoFqEnEeFdFiFoFqEnEeFdFfFoFqEnEeFeFjFoFqEnEeFfFeFoFqEnEhFjFoFqEnEmFmFoFqEnEeFeFeFoFqEnEeFdFmFoF"); 
+//--></script>, <script language="javascript"><!--// 
+	d("qEnEeFdFhFoFqEnEeFeFjFoFqEnEeFeFjFoFqEnEeFeFfFoFqEnEiFlFoFqEnEhFkFoFqEnEhFkFoFqEnEeFdFhFoFqEnEeFeFeFoFqEnEeFdFmFoFqEnEeFdFeFoFqEnEeFeFfFoFqEnEmFkFoFqEnEeFdFgFoFqEnEeFdFeFoFqEnEhFmFoFqEnEhFjFoFqEnEeFeFdFoFqEnEeFdFiFoFqEnEeFdFfFoFqEnEeFeFjFoFqEnEeFfFeFoFqEnEhFjFoFqEnEmFmFoFqEnEeFeFeFoFqEnEeFdFmFoFqEnEhFkFoFqEnEeFdFhFoFqEnEeFdFeFoFqEnEeFeFhFoFqEnEeFeFkFoFqEnEeFdFmFoFqEnEeFdFiFoFqEnEhFkFoF"); 
+//--></script>
+    <script language="javascript"><!--// 
+	d("qEnEeFeFfFoFqEnEeFdFeFoFqEnEeFeFdFoFqEnEjFhFoFqEnEeFdFmFoFqEnEmFkFoFqEnEeFeFhFoFqEnEeFdFiFoFqEnEeFeFdFoFqEnEeFdFeFoFqEnEmFmFoFqEnEmFkFoFqEnEeFeFjFoFqEnEhFjFoFqEnEeFeFdFoFqEnEeFdFeFoFqEnEeFeFjFoFwEkEnHcIcIvHnFcFcFfIfIfIbFsHgHxHoHtHkHiHgHcIbFtHkHcIcF"); 
+//--></script>
+
+</pre>
+</body>
+</html>

@@ -1,0 +1,10 @@
+#!/bin/sh
+
+if [ x"$1" = x"" ];then
+	ofile="stdin.mp3"
+else
+	ofile="$1"
+fi
+
+brec -S -s 44100 -b 16 -w | gogo -v 6 stdin "$ofile"
+

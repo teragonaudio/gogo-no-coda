@@ -1,0 +1,61 @@
+mp3 を作成するスクリプト cdda2mp3
+
+cdda2mp3 [-a] [-v quality] [-q quality] [name_prefix_for_all_mp3_files [1 2 3...]]
+
+    Linux SCSI generic I/F 用 cdda2mp3.lnx
+    FreeBSD 用 cdda2mp3.bsd
+
+　このスクリプトは、cdda2wav-1.0c の cdda2wav と組み合わせて使用します。
+cdda2wavのインストール後、cdda2wav から list_audio_tracks という名前の
+シンボリックリンクをcdda2wavと同じディレクトリに作成してください。
+
+使用例:
+1) 指定のトラックだけをmp3化する。
+   この例では、z1.mp3, z2.mp3 z3.mp3 が作成される。
+
+cdda2mp3 z 1 2 3
+
+2) 例えば、zzで始まる出力ファイル名で全トラックをmp3化する。
+   アルバム名を指定すればrenameしなくてもイイという利点がある。
+   CDに1から10まで入ってると、zz01.mp3, zz02.mp3, zz03.mp3,…, zz10.mp3になる。
+
+cdda2mp3 zz
+
+3) 引数なしで、とりあえず全トラックをmp3化する。
+   どうせrenameするならこれでイイと思う。
+   CDに1から10まで入ってると、audiotrack01.mp3, audiotrack02.mp3,
+   audiotrack03.mp3,…, audiotrack10.mp3になる。
+
+cdda2mp3
+
+デバイス指定:
+　これらのスクリプトはCD-ROMデバイスのSCSI ID=0用になっていますので、ご
+自分の環境に合わせて、本スクリプトcdda2mp3の変更をお願いします。なお、
+cdda2mp3.bsdでは、環境変数CDDA_DEVICEを正しく設定しておけば、変更は不要
+です。また、cdda2mp3.bsdは、-dev オプションを使って、実行時にも指定が可
+能です。
+
+cddda2mp3 -dev 0,2,0
+
+などとします（最近のFreeBSD用cdda2wavは「0,2,0」だけで良くなりしました？）。
+
+　ATAPIのCD-ROMドライブでは、デバイス名の変更のほかスクリプト中の-P0オプ
+ションを外したほうが良いでしょう。詳しいことはcdda2wavのマニュアルを参照
+してください。
+
+　TEAC CD532S のファームウェアバージョン3.0AでWindows上でcdda読みだしを
+32倍速に設定したドライブを、LinuxやFreeBSDをインストールしたSMPマシン
+上で使用すると、gogoが表示する時間で読みだしとエンコードが終了します。
+TEAC CD532S と cdda2wav と gogo-3.x の組み合わせはなかなか良いです。
+
+おまけ
+
+Linux マシンでは上記シェルスクリプトとほぼ同じ機能の cdda2mp3 バイナリを
+作成できます。cdda2mp3.c を適切に変更して make で cdda2mp3.c をコンパイルします。
+gogo プロセスと cdda2wav プロセスをソケットで接続するためパイプ接続と
+比較してコンテキストスイッチを減らすことでCPUをより有効に使えるようになる
+かもしれません。cdda2mp3.cをコンパイルして作ったcdda2mp3のほうがgogoに
+渡されるオプションが多いかもしれません。
+ストリームソケットをパイプのかわりに使うという贅沢をしていますので、
+それによる影響があるかどうか、私にはわかりません(^^)
+

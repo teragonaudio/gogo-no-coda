@@ -1,0 +1,42 @@
+body{
+	color:black;
+	background-color:#f0f0ff;
+	font: small;
+	margin-top:0;
+	margin-left:0;
+	margin-right:0;
+	font-family : "MS UI Gothic","‚l‚r ‚oƒSƒVƒbƒN";
+}
+
+div.head {
+	color: #404060;
+	text-align: center; 
+	text-indent: 0;
+	font-size: 24px;
+	font-weight: bold;
+	border-bottom: 2px;
+	border-bottom-style: solid;
+	border-bottom-color: #708090;
+	padding: 4px;
+	background-color: #e8e8f8;
+	margin-left: 0;
+	margin-right: 0;
+}
+
+div.index {
+	text-align: left; 
+	text-indent: 0;
+	font-size: 16px;
+	color: #303048;
+	border-top: 1px;
+	border-top-style: solid;
+	border-top-color: #e0e0f0;
+	border-bottom: 2px;
+	border-bottom-style: solid;
+	border-bottom-color: #707090;
+	padding: 4px;
+	padding-left: 16px;
+	background-color: #e8f0f8;
+	margin-left: 0;
+	margin-right: 0;
+}

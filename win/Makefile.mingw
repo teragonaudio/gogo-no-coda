@@ -1,0 +1,198 @@
+#######################################################
+#
+#   Makefile for GOGO-no-coda
+#
+#   Copyright(C) 2001,2002,2003 K.Sakai
+#   Copyright(C) 2001           もと
+#   Copyright(C) 2001,2002,2003 T.Narita
+#
+#   Linux版用のmakefile（K.Sakaiさん作成）をもとに
+#   Mingw32-gcc向けに改変         2001-09-02  by もと
+#
+#######################################################
+
+TARGET = gogo.exe
+
+#######################################################
+
+# gcc ver2.95.3以降でビルド時は下の行の行頭の＃を削除
+
+#GCC2953 = yes
+
+CC   = gcc -c -I../engine
+AS   = nasmw -i../engine/i386/
+LD   = gcc
+
+# makecfg.exe や global.cfg がうまく生成されないようならこの下の行を
+# MAKECFG = ./makecfg.exe 
+# と変更してください reported by tatuto さん
+
+MAKECFG = makecfg.exe
+GLOBALCFG = ../engine/i386/global.cfg
+LIBS = -lm
+LDFLAGS = $(PROF)
+
+# Mingw32-gcc 2.95.3-5で最適化 -O2以上を指定するとエンコード速度の倍率
+# 表示が(0.0x)のままという不具合が出る（gogo 3.02α）gccの他のバージョンで
+# どうなのか不明だがとりあえず -fno-expensive-optimizationsを指定すると
+# 回避されるようである。 gcc 2.95.2 ではこの問題ないみたい・・・
+
+CFLAGS = -Wall $(PROF) -O2 -finline-functions -funroll-loops -fno-expensive-optimizations -DNDEBUG -DUSE_LIBSNDIO
+
+# for aggressive optimization
+#CFLAGS = -Wall $(PROF) -O6 -mcpu=pentiumpro -march=pentiumpro -pedantic -pipe -fstrength-reduce -fno-expensive-optimizations -finline-functions -fomit-frame-pointer -funroll-loops -ffast-math -foptimize-register-move -fdefer-pop -mfancy-math-387 -DNDEBUG
+ 
+#Mingw32-gcc v2.95.2は -D__MINGW32_VERSION の指定が必要
+ifeq ($(GCC2953),yes)
+	AFLAGS = -f win32 -DWIN32 $(E3DN)
+else
+	AFLAGS = -f win32 -DWIN32 -D__MINGW32_VERSION $(E3DN)
+endif
+
+COBJS =	bitstream.o get_audio.o \
+	newmdct.o quantize_pvt.o \
+	tables.o util.o \
+	gogo.o \
+	psymodel.o reservoir.o \
+	takehiro.o \
+	fft.o lame.o \
+	quantize.o \
+	tool.o vbrtag.o \
+	main.o gogo_io.o setup.o 
+
+AOBJS = clka.o cpua.o cpu.o choose_table.o quantizea.o quant3dn.o vars.o psymodela.o psysse.o psy3dn.o gogo2_fht.o fftsse.o mdctsse.o mdct3dn.o sbandfpu.o sbandsse.o sband3dn.o sbandtbl.o
+
+LIBSNDCOBJS = \
+	libsnd_io.o \
+	au.o \
+	wav_ms_adpcm.o \
+	pcm.o \
+	wav_ima_adpcm.o \
+	wav_gsm610.o \
+	sndfile.o \
+	raw.o \
+	paf.o \
+	au_g72x.o \
+	wav.o \
+	svx.o \
+	aiff.o \
+	common.o \
+	voc.o \
+	ulaw.o \
+	samplitude.o \
+	alaw.o \
+	nist.o \
+	float32.o \
+	ircam.o \
+	g72x.o \
+	g721.o \
+	g723_16.o \
+	g723_24.o \
+	g723_40.o \
+	add.o \
+	code.o \
+	gsm_create.o \
+	decode.o \
+	gsm_decode.o \
+	gsm_encode.o \
+	long_term.o \
+	preprocess.o \
+	short_term.o \
+	gsm_destroy.o \
+	gsm_option.o \
+	lpc.o \
+	rpe.o \
+	table.o 
+
+#PROF = -g -pg
+#CFLAGS = -Wall $(PROF) -O -DNDEBUG
+
+CFLAGS += -DHAVE_CONFIG_H -DLAMEPARSE -DLAMESNDFILE
+
+CFLAGS += -DUSE_X86ASM
+#CFLAGS += -Wpointer-arith -Wshadow -Wwrite-strings -Wconversion -Waggregate-return -Wstrict-prototypes -Wmissing-prototypes -Wmissing-declarations -Wredundant-decls -Wnested-externs
+
+CFLAGS += -DUSE_WINTHREAD
+COBJS += thread.o
+#LIBS += -lpthread
+
+CFLAGS += -DUSE_TTIMER
+
+# This option is available for gcc-2.8.x
+#CC=gcc -c -mcpu=pentiumpro -malign-double -O6 -fstrength-reduce -fno-expensive-optimizations  -finline-functions -fomit-frame-pointer -funroll-loops
+# This option is available for gcc-2.95.1, gcc-2.95.2, gcc-2.95.3,... on P6 or later
+#CC=gcc -c -mcpu=pentiumpro -march=pentiumpro -O9 -fstrength-reduce -fno-expensive-optimizations -finline-functions -fomit-frame-pointer -funroll-loops -ffast-math -foptimize-register-move -fdefer-pop -mfancy-math-387
+
+VPATH = ../engine:../engine/i386:../file_io/libsnd:../file_io/libsnd/G72x:../file_io/libsnd/GSM610
+
+.SUFFIXES: .nas .c
+
+all:	$(TARGET)
+
+$(TARGET): $(COBJS) $(AOBJS) $(LIBSNDCOBJS)
+	$(LD) $(COBJS) $(AOBJS) $(LIBSNDCOBJS) $(LDFLAGS) -o $(TARGET) $(LIBS)
+
+.nas.o:
+	$(AS) $(AFLAGS) $< -o $@
+
+.c.o:
+	$(CC) $(CFLAGS) $< -o $@
+
+clean:
+	-command /c del *.o
+	-command /c del $(TARGET)
+	-command /c del ..\engine\i386\global.cfg
+
+cpua.o:		cpua.nas nasm.cfg $(GLOBALCFG)
+clka.o:		clka.nas nasm.cfg $(GLOBALCFG)
+choose_table.o:	choose_table.nas nasm.cfg $(GLOBALCFG)
+quantizea.o:	quantizea.nas nasm.cfg $(GLOBALCFG)
+cpu.o:		cpu.c common.h cpu.h gogo.h global.h
+vars.o:		vars.nas $(GLOBALCFG)
+psymodela.o:	psymodela.nas nasm.cfg $(GLOBALCFG)
+psysse.o:	psysse.nas nasm.cfg $(GLOBALCFG)
+psy3dn.o:	psy3dn.nas nasm.cfg $(GLOBALCFG)
+quant3dn.o:	quant3dn.nas nasm.cfg $(GLOBALCFG)
+gogo2_fht.o:	gogo2_fht.nas nasm.cfg $(GLOBALCFG)
+fftsse.o:	fftsse.nas nasm.cfg $(GLOBALCFG)
+mdctsse.o: mdctsse.nas nasm.cfg $(GLOBALCFG)
+mdct3dn.o: mdct3dn.nas nasm.cfg $(GLOBALCFG)
+sbandfpu.o: sbandfpu.nas nasm.cfg $(GLOBALCFG)
+sbandsse.o: sbandsse.nas nasm.cfg $(GLOBALCFG)
+sband3dn.o: sband3dn.nas nasm.cfg $(GLOBALCFG)
+sbandtbl.o: sbandtbl.nas nasm.cfg $(GLOBALCFG)
+
+#global.h : common.h gogo.h l3side.h
+#l3side.h: encoder.h machine.h
+
+$(GLOBALCFG) : ../engine/i386/makecfg.c global.h
+	gcc -I../engine $(CFLAGS) ../engine/i386/makecfg.c -o $(MAKECFG)
+	$(MAKECFG) > $(GLOBALCFG)
+
+thread.o :	thread.c       config.h global.h common.h gogo.h l3side.h encoder.h machine.h thread.h
+
+bitstream.o:	bitstream.c    config.h global.h common.h gogo.h l3side.h encoder.h machine.h thread.h lame.h util.h tables.h bitstream.h quantize.h quantize_pvt.h
+fft.o:		fft.c          config.h global.h common.h gogo.h l3side.h encoder.h machine.h thread.h util.h fft.h
+get_audio.o:	get_audio.c    config.h global.h common.h gogo.h l3side.h encoder.h machine.h thread.h lame.h get_audio.h tool.h gogo_io.h
+gogo.o:		gogo.c         config.h global.h common.h gogo.h l3side.h encoder.h machine.h thread.h lame.h get_audio.h cpu.h tool.h gogo_io.h encoder.c version.h
+lame.o:		lame.c         config.h global.h common.h gogo.h l3side.h encoder.h machine.h thread.h lame.h util.h bitstream.h tables.h quantize_pvt.h vbrtag.h
+newmdct.o:	newmdct.c      config.h global.h common.h gogo.h l3side.h encoder.h machine.h thread.h util.h newmdct.h
+psymodel.o:	psymodel.c     config.h global.h common.h gogo.h l3side.h encoder.h machine.h thread.h util.h psymodel.h tables.h
+quantize.o:	quantize.c     config.h global.h common.h gogo.h l3side.h encoder.h machine.h thread.h util.h quantize.h reservoir.h quantize_pvt.h
+quantize_pvt.o:	quantize_pvt.c config.h global.h common.h gogo.h l3side.h encoder.h machine.h thread.h util.h tables.h reservoir.h quantize_pvt.h
+reservoir.o:	reservoir.c    config.h global.h common.h gogo.h l3side.h encoder.h machine.h thread.h util.h reservoir.h
+tables.o:	tables.c       config.h global.h common.h gogo.h l3side.h encoder.h machine.h thread.h util.h tables.h
+takehiro.o:	takehiro.c     config.h global.h common.h gogo.h l3side.h encoder.h machine.h thread.h util.h tables.h quantize_pvt.h
+tool.o:		tool.c         config.h global.h common.h gogo.h l3side.h encoder.h machine.h thread.h tool.h lame.h vbrtag.h gogo_io.h
+util.o:		util.c         config.h global.h common.h gogo.h l3side.h encoder.h machine.h thread.h util.h
+vbrtag.o:	vbrtag.c       config.h global.h common.h gogo.h l3side.h encoder.h machine.h thread.h vbrtag.h bitstream.h
+
+main.o:		../main.c common.h gogo.h global.h tool.h cpu.h
+	$(CC) $(CFLAGS) -I../engine $< -o $@
+
+gogo_io.o:	../file_io/gogo_io.c 
+	$(CC) $(CFLAGS) -I../engine -I../file_io/libsnd $< -o $@
+
+libsnd_io.o:	../file_io/libsnd_io.c 
+	$(CC) $(CFLAGS) -I../engine -I../file_io/libsnd $< -o $@
+

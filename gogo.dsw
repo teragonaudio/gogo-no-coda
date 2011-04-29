@@ -1,0 +1,59 @@
+Microsoft Developer Studio Workspace File, Format Version 6.00
+# 警告: このワークスペース ファイル を編集または削除しないでください!
+
+###############################################################################
+
+Project: "gogo_con"=.\gogo_con.dsp - Package Owner=<4>
+
+Package=<5>
+{{{
+}}}
+
+Package=<4>
+{{{
+    Begin Project Dependency
+    Project_Dep_Name makecfg
+    End Project Dependency
+}}}
+
+###############################################################################
+
+Project: "gogo_dll"=.\gogo_dll.dsp - Package Owner=<4>
+
+Package=<5>
+{{{
+}}}
+
+Package=<4>
+{{{
+    Begin Project Dependency
+    Project_Dep_Name makecfg
+    End Project Dependency
+}}}
+
+###############################################################################
+
+Project: "makecfg"=.\engine\i386\makecfg.dsp - Package Owner=<4>
+
+Package=<5>
+{{{
+}}}
+
+Package=<4>
+{{{
+}}}
+
+###############################################################################
+
+Global:
+
+Package=<5>
+{{{
+}}}
+
+Package=<3>
+{{{
+}}}
+
+###############################################################################
+

@@ -1,0 +1,191 @@
+#######################################################
+#
+#   Makefile for GOGO-no-coda
+#   for Borland C++ 5.xx
+#
+#   Copyright(C) 2001,2002,2003 K.Sakai
+#   Copyright(C) 2001,2002,2003 kei
+#
+#      Thanks to sava for BCCdeSSE
+#
+#######################################################
+
+TARGET = gogo.exe
+
+#######################################################
+
+CC   = bcc32 -I..\engine -tWC -tWM -O2 -Oi -Oc -Ov -OS -w-eff
+AS   = nasmw -i..\engine\i386\\
+FIXED_ALIGN = fixu32.exe -u -padding16
+ 
+LD   = ilink32
+MAKECFG = .\makecfg.exe
+GLOBALCFG = ..\engine\i386\global.cfg
+LIBS = 
+LDFLAGS = /c /ap /Tpe /w
+CFLAGS = -DWIN32 -DNDEBUG -D_CONSOLE -DUSE_WINTHREAD -DUSE_TTIMER -DUSE_LIBSNDIO
+AFLAGS = -f obj -DWIN32 -D__BORLANDC__ 
+
+COBJS =	\
+	bitstream.obj \
+	get_audio.obj \
+	newmdct.obj \
+	quantize_pvt.obj \
+	tables.obj \
+	util.obj \
+	gogo.obj \
+	psymodel.obj \
+	reservoir.obj \
+	takehiro.obj \
+	fft.obj \
+	lame.obj \
+	quantize.obj \
+	tool.obj \
+	vbrtag.obj \
+	cpu.obj \
+	main.obj \
+	gogo_io.obj \
+	setup.obj \
+	thread.obj
+
+AOBJS = \
+	cpua.obj \
+	choose_table.obj \
+	quantizea.obj \
+	vars.obj \
+	psymodela.obj \
+	psysse.obj \
+	psy3dn.obj \
+	quant3dn.obj \
+	gogo2_fht.obj \
+	fftsse.obj \
+	mdctsse.obj \
+	mdct3dn.obj \
+	sbandfpu.obj \
+	sbandsse.obj \
+	sband3dn.obj \
+	sbandtbl.obj \
+	clka.obj
+
+LIBSNDCOBJS = \
+	libsnd_io.obj \
+	au.obj \
+	wav_ms_adpcm.obj \
+	pcm.obj \
+	wav_ima_adpcm.obj \
+	wav_gsm610.obj \
+	sndfile.obj \
+	raw.obj \
+	paf.obj \
+	au_g72x.obj \
+	wav.obj \
+	svx.obj \
+	aiff.obj \
+	common.obj \
+	voc.obj \
+	ulaw.obj \
+	samplitude.obj \
+	alaw.obj \
+	nist.obj \
+	float32.obj \
+	ircam.obj \
+	g72x.obj \
+	g721.obj \
+	g723_16.obj \
+	g723_24.obj \
+	g723_40.obj \
+	add.obj \
+	code.obj \
+	gsm_create.obj \
+	decode.obj \
+	gsm_decode.obj \
+	gsm_encode.obj \
+	long_term.obj \
+	preprocess.obj \
+	short_term.obj \
+	gsm_destroy.obj \
+	gsm_option.obj \
+	lpc.obj \
+	rpe.obj \
+	table.obj 
+
+.path.c = ..\engine;..\engine\i386;..\file_io\libsnd;..\file_io\libsnd\G72x;..\file_io\libsnd\GSM610
+.path.h = ..\engine;..\engine\i386
+.path.nas = ..\engine\i386
+.path.cfg = ..\engine\i386
+
+.SUFFIXES: .nas .c
+
+all:	fixu32.exe $(TARGET)
+
+fixu32.exe: ..\contrib\BCCdeSSE\fixu32.c
+	bcc32 ..\contrib\BCCdeSSE\fixu32.c -efixu32.exe
+
+$(TARGET): $(COBJS) $(AOBJS) $(LIBSNDCOBJS) fixu32.exe
+	$(LD) $(LDFLAGS) c0x32.obj $(AOBJS) $(COBJS) $(LIBSNDCOBJS) , $(TARGET),, import32.lib cw32mt.lib $(LIBS)
+
+.nas.obj:
+	$(AS) $(AFLAGS) $< -o $@
+	$(FIXED_ALIGN) $@
+
+.c.obj:
+	$(CC) -c $(CFLAGS) $< -o $@
+
+clean:
+	-del *.obj
+	-del $(GLOBALCFG)
+	-del $(TARGET)
+
+cpua.obj:		cpua.nas nasm.cfg $(GLOBALCFG)
+clka.obj:		clka.nas nasm.cfg $(GLOBALCFG)
+choose_table.obj:	choose_table.nas nasm.cfg $(GLOBALCFG)
+quantizea.obj:	quantizea.nas nasm.cfg $(GLOBALCFG)
+cpu.obj:		cpu.c common.h cpu.h gogo.h global.h
+vars.obj:		vars.nas $(GLOBALCFG)
+psymodela.obj:	psymodela.nas nasm.cfg $(GLOBALCFG)
+psysse.obj:	psysse.nas nasm.cfg $(GLOBALCFG)
+psy3dn.obj:	psy3dn.nas nasm.cfg $(GLOBALCFG)
+quant3dn.obj:	quant3dn.nas nasm.cfg $(GLOBALCFG)
+gogo2_fht.obj:	gogo2_fht.nas nasm.cfg $(GLOBALCFG)
+fftsse.obj:	fftsse.nas nasm.cfg $(GLOBALCFG)
+mdctsse.obj: mdctsse.nas nasm.cfg $(GLOBALCFG)
+mdct3dn.obj: mdct3dn.nas nasm.cfg $(GLOBALCFG)
+sbandfpu.obj: sbandfpu.nas nasm.cfg $(GLOBALCFG)
+sbandsse.obj: sbandsse.nas nasm.cfg $(GLOBALCFG)
+sband3dn.obj: sband3dn.nas nasm.cfg $(GLOBALCFG)
+sbandtbl.obj: sbandtbl.nas nasm.cfg $(GLOBALCFG)
+
+#global.h : common.h gogo.h l3side.h
+#l3side.h: encoder.h machine.h
+
+$(GLOBALCFG) : ..\engine\i386\makecfg.c global.h
+	$(CC) -I..\engine $(CFLAGS) ..\engine\i386\makecfg.c -e$(MAKECFG)
+	$(MAKECFG) > $(GLOBALCFG)
+
+bitstream.obj:	bitstream.c    config.h global.h common.h gogo.h l3side.h encoder.h machine.h thread.h lame.h util.h tables.h bitstream.h quantize.h quantize_pvt.h
+fft.obj:		fft.c          config.h global.h common.h gogo.h l3side.h encoder.h machine.h thread.h util.h fft.h
+get_audio.obj:	get_audio.c    config.h global.h common.h gogo.h l3side.h encoder.h machine.h thread.h lame.h get_audio.h tool.h gogo_io.h
+gogo.obj:		gogo.c         config.h global.h common.h gogo.h l3side.h encoder.h machine.h thread.h lame.h get_audio.h cpu.h tool.h gogo_io.h encoder.c version.h
+lame.obj:		lame.c         config.h global.h common.h gogo.h l3side.h encoder.h machine.h thread.h lame.h util.h bitstream.h tables.h quantize_pvt.h vbrtag.h
+newmdct.obj:	newmdct.c      config.h global.h common.h gogo.h l3side.h encoder.h machine.h thread.h util.h newmdct.h
+psymodel.obj:	psymodel.c     config.h global.h common.h gogo.h l3side.h encoder.h machine.h thread.h util.h psymodel.h tables.h
+quantize.obj:	quantize.c     config.h global.h common.h gogo.h l3side.h encoder.h machine.h thread.h util.h quantize.h reservoir.h quantize_pvt.h
+quantize_pvt.obj:	quantize_pvt.c config.h global.h common.h gogo.h l3side.h encoder.h machine.h thread.h util.h tables.h reservoir.h quantize_pvt.h
+reservoir.obj:	reservoir.c    config.h global.h common.h gogo.h l3side.h encoder.h machine.h thread.h util.h reservoir.h
+tables.obj:	tables.c       config.h global.h common.h gogo.h l3side.h encoder.h machine.h thread.h util.h tables.h
+takehiro.obj:	takehiro.c     config.h global.h common.h gogo.h l3side.h encoder.h machine.h thread.h util.h tables.h quantize_pvt.h
+tool.obj:		tool.c         config.h global.h common.h gogo.h l3side.h encoder.h machine.h thread.h tool.h lame.h vbrtag.h gogo_io.h
+util.obj:		util.c         config.h global.h common.h gogo.h l3side.h encoder.h machine.h thread.h util.h
+vbrtag.obj:	vbrtag.c       config.h global.h common.h gogo.h l3side.h encoder.h machine.h thread.h vbrtag.h bitstream.h
+
+main.obj:		..\main.c common.h gogo.h global.h tool.h cpu.h
+	$(CC) -c $(CFLAGS) -I..\engine ..\main.c -o .\main.obj
+
+gogo_io.obj:	..\file_io\gogo_io.c 
+	$(CC) -c $(CFLAGS) -I..\engine -I..\file_io\libsnd ..\file_io\gogo_io.c -o .\gogo_io.obj
+
+libsnd_io.obj:	..\file_io\libsnd_io.c 
+	$(CC) -c $(CFLAGS) -I..\engine -I..\file_io\libsnd ..\file_io\libsnd_io.c -o .\libsnd_io.obj
+
+thread.obj :	.\thread.c       config.h global.h common.h gogo.h l3side.h encoder.h machine.h thread.h ..\pthread\thread.c
+	$(CC) -c $(CFLAGS) -I..\engine .\thread.c -o .\thread.obj

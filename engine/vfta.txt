@@ -1,0 +1,58 @@
+#
+#       part of this code is origined from
+#       GOGO-no-coda
+#
+#       Copyright(C) 2002,2003 gogo-developer
+#
+#	仮想関数的アセンブラ関数のポインタ(Virtual function Table for Assembler)に
+#	関するファイルを自動生成するための定義ファイル
+#
+#	ruby で処理される
+#	文字コードの問題を避けるために，コメント以外では2バイトコードは使用禁止
+
+#	cpu(CPU識別子名, そのCPUに関するファイルを出力するディレクトリ);
+#		petitで動作対象にするCPUを指定する
+#		現在，ディレクトリ名は未使用
+cpu('CPU_I386', './i386');
+cpu('CPU_PPC', './ppc');
+
+#	setup(関数名, setupが必要なCPU識別子名の配列);
+#		VTA を初期化する関数を指定する
+setup('setup_shiftoutpfb', ['CPU_I386']);
+setup('setup_dist_mfbuf', ['CPU_I386']);
+setup('setup_convolute_energy', ['CPU_I386']);
+setup('setup_choose_table', ['CPU_I386']);
+setup('setup_inner_psy_ch4', ['CPU_I386']);
+setup('setup_fft', ['CPU_I386', 'CPU_PPC']);
+setup('setup_mdct', ['CPU_I386']);
+setup('setup_quantize_xrpow_ISO', ['CPU_I386']);
+setup('setup_pow075', ['CPU_I386', 'CPU_PPC']);
+setup('setup_calc_noise_long', ['CPU_I386']);
+setup('setup_ms_convert', ['CPU_I386']);
+
+#	vfta(関数名, 戻り値, 引数, CPU識別子名の配列);
+#		vfta に含める関数を指定する
+vfta('ms_convert', 'void', 'FLOAT8* srcl, FLOAT8* srcr, int n', ['CPU_I386']);
+vfta('pow075', 'void', 'float xr[576], float xrpow[576], float *psum, float *pmax, uint32 *xr_sign', ['CPU_I386']);
+vfta('shiftoutpfb', 'void', 'void* dest, void* src', ['CPU_I386']);
+vfta('fht', 'void', 'float * fz, int n', ['CPU_I386']);
+vfta('fft_short', 'void', 'float (*wsamp)[3][BLKSIZE_s], float (*mfbuf)[4][576]', ['CPU_I386']);
+vfta('fft_long', 'void', 'float (*wsamp)[BLKSIZE], float (*mfbuf)[4][576]', ['CPU_I386']);
+vfta('fht_vector4', 'void', 'float * fz, int n', ['CPU_I386']);
+vfta('fft_short_vector4', 'void', 'float *wsamp, float *mfbuf', ['CPU_I386']);
+vfta('fft_long_vector4', 'void', 'float *wsamp, float *mfbuf', ['CPU_I386']);
+vfta('fft_prepare', 'void', 'float *dest, const float *src, int count', ['CPU_I386']);
+vfta('psy_prepare', 'void', 'float *dest, const float *src, int count', ['CPU_I386']);
+vfta('dist_mfbuf', 'void', 'float (*mfbuf)[4][576]', ['CPU_I386']);
+vfta('convolute_energy', 'void', 'const int typeFlag, float *eb, float *cb, float *thr, float *nb_12', ['CPU_I386']);
+vfta('choose_table', 'int', 'const int *ix, const int *end, int *s', ['CPU_I386']);
+vfta('inner_psy_sub1', 'void', 'gogo_thread_data *tl', ['CPU_I386']);
+vfta('inner_psy_sub2', 'void', 'gogo_thread_data *tl', ['CPU_I386']);
+vfta('inner_psy_sub3', 'void', 'float *eb, float *cb, float *thr', ['CPU_I386']);
+vfta('inner_psy_sub4', 'void', 'gogo_thread_data *tl', ['CPU_I386']);
+vfta('inner_psy_sub5', 'void', 'gogo_thread_data *tl', ['CPU_I386']);
+vfta('inner_psy_sub6', 'void', 'gogo_thread_data *tl', ['CPU_I386']);
+vfta('mdct_long', 'void', 'FLOAT8 * out, FLOAT8 * in', ['CPU_I386']);
+vfta('window_subband_sub1', 'void', 'const float *x1, float *a', ['CPU_I386']);
+vfta('quantize_xrpow_ISO', 'void', 'const FLOAT8 xr[576], int ix[576], float *istepPtr', ['CPU_I386']);
+vfta('calc_noise_long', 'void', 'CALC_NOISE_TYPE', ['CPU_I386']);

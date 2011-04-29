@@ -1,0 +1,71 @@
+ver. 3.00	2001/07/27
+	released at SWoPP2001
+	(2001 "Okinawa" Summer United Workshops on
+	  Parallel, Distributed, and Cooperative Processing)
+ver. 3.01	2001/08/15
+	rewirte data flow and global variables
+ver. 3.02	2001/08/28
+	parallelized psycho-acoustics routine for SIMD
+	start coding for SSE2 and Enhanced 3D Now!
+ver. 3.03	2001/09/02
+	the psycho-acoustics routine re-written by SSE is 3 times
+	as fast as that of LAME.
+	add win/Makefile.bcc for Borland C++ Compiler. It can't handle SSE
+	code.
+ver. 3.04	2001/09/03
+	I had made terrible bugs in psymodel.c.
+ver. 3.05	2001/09/15
+	supported libsndfile stream in (http://www.zip.com.au/~erikd/libsndfile/)
+	add win/Makefile.mingw ( by Moto )
+ver. 3.06	2001/09/30
+	fix warning using mingw ( by Moto )
+	fix warning when VC rebuilds ( reported by Takakun <takakun@mc.neweb.ne.jp> )
+	fix bug of prototype in tool.h ( reported by pot <potp@mail.goo.ne.jp> )
+	removed libsndfile.
+	add win/Makefile_dll.mingw ( by Moto )
+	supported SMP in gogo.dll
+ver. 3.07	2001/10/27
+    4-paralleliezd FFT for SSE
+	add win/Makefile_dll.bcc win/gogo_dll_bcc.def ( by sava )
+    contrib/BCCdeSSE for using SSE on BCC( by sava )
+ver. 3.08	2001/12/25
+	add notice using mingw ( reported by tatuto )
+ver. 3.09	2002/01/19
+	fix bug of VBR iteration
+	a patch for OS2 by Max Alekseyev and Nickk
+	mdct_long for SSE2
+	replace io functions
+	add handling 8bit depth PCM
+	implement option -m m
+ver. 3.10	2002/03/10
+	change settig of -q 9
+	a patch for OS2 Makefile by Max Alekseyev
+	fix bug of VBR on SMP
+	fix warning using bcc ( reported by gaia )
+	fix bug of encoding 16KHz
+	fix quality-0 settings ( reported by float )
+	fix bug of VBR tag
+	fix bug of VBR ( reported by Jochen Kleinbauer )
+	fix compatibility about user input function ( reported by gogo-no-mukaeda )
+	fix compatibility about lpf ( reported by gogo-daisuki-nin )
+	fix bug about assigning too many bits
+	MC_ADDTAG for ID3Tag1.x
+ver. 3.10pl2	2002/03/30
+	a patch for OS2 by sava and Max Alekseyev
+	merged customize version of "libsndfile".
+	support of MC_USELPF16 emulation
+	support of -test option
+	fix bug of libsndfile initialization
+	fix bug of assertion ( reported by hacker )
+	fix operation of "-silent" option
+	fix bug of Visual Basic support
+ver. 3.10pl3	2002/04/05
+	fix bug of multi CPU support
+ver. 3.11	2002/11/25
+	fix bug of "AOUT" memory alignment ( reported by Max Alekseyev )
+	fix compatibility about Windows Media Player 6.4
+	supported LameTag output
+ver. 3.12	2003/10/02
+	speed up when using "-q 9" option
+ver. 3.13	2004/05/20
+	implement resampling functions

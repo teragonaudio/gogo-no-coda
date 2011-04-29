@@ -1,0 +1,25 @@
+script to make mp3; cdda2mp3
+
+cdda2mp3 [-a] [-v quality] [-q quality] [name_prefix_for_all_mp3_files [1 2 3...]]
+
+ cdda2mp3.lnx for Linux SCSI generic I/F
+ cdda2mp3.bsd for FreeBSD
+
+ This script is used with cdda2wav ( cdda2wav ).
+ After installing cdda2wav, make a symbolic link named as list_audio_tracks
+ from cdda2wav in the same directory as cdda2wav.
+
+ You may have to modify this script according to your environment since this
+ is for only SCSI ID=0 on CD-ROM.
+
+usage:
+1) convert the specified tracks to mp3-file
+
+   % cdda2mp3 z 1 2 3     ;making z1.mp3, z2.mp3, z3.mp3
+
+2) convert the all tracks to mp3-file named as zz???.mp3
+
+  % cdda2mp3 zz           ;making zz01.mp3, zz02.mp3, ...
+
+3)% cdda2mp3              ;making autiotrack01.mp3, autiotrack02.mp3, ...
+

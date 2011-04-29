@@ -1,0 +1,182 @@
+#############################################################
+#
+#   << configure for gogo-no-coda >>
+#
+#   Copyright (C) 2002,2003 PEN@MarineCat
+#   Copyright (C) 2002,2003 gogo-developer
+#
+#############################################################
+
+dnl Process this file with autoconf to produce a configure script.
+AC_INIT(readme.html)
+AC_CONFIG_HEADER(config.h)
+
+dnl Checks for programs.
+AC_PROG_CC
+
+#dnl Checks hostname
+#AC_CANONICAL_HOST
+
+dnl Checks machine environment
+host_cpu=`(uname -m) 2>/dev/null` || host_cpu=
+host_os=`(uname -s) 2>/dev/null`  || host_os=
+nasm_support=no
+CFLAGS=${CFLAGS}
+AFLAGS="-f elf "
+
+case "${host_cpu}:${host_os}" in
+	i*86:CYGWIN*)
+		#echo Cygwin compartible environment
+		AC_DEFINE( CPU_I386 )
+		AFLAGS="-f gnuwin32 -DWIN32 -D__BORLANDC "
+		nasm_support=yes
+		;;
+	Pentium*:CYGWIN*)
+		#echo Cygwin compartible environment
+		AC_DEFINE( CPU_I386 )
+		AFLAGS="-f gnuwin32 -DWIN32 -D__BORLANDC "
+		nasm_support=yes
+		;;
+#	i*86:Linux*)
+#		#echo Linux environment
+#		AC_DEFINE( CPU_I386 )
+#		;;
+	i*86:*)
+		#echo x86 environment
+		AC_DEFINE( CPU_I386 )
+		nasm_support=yes
+		;;
+	Pentium*:*)
+		#echo x86 environment
+		AC_DEFINE( CPU_I386 )
+		nasm_support=yes
+		;;
+	powerpc:*)
+		#echo PowerPC compartible environment
+		AC_DEFINE( CPU_PPC )
+		;;
+	ppc:*)
+		#echo PowerPC compartible environment
+		AC_DEFINE( CPU_PPC )
+		;;
+	*:*)
+		#unknown support target
+		echo Sorry! unsupported environment was detected --  ${host_cpu}-${host_os} 
+		exit 0;;
+esac
+
+if test x${nasm_support} = xyes; then
+	dnl Checks for netwide-assembler
+	AC_CHECK_PROGS( NASM, nasm nasmw )
+	if test x${NASM} = x; then
+		echo In order to generate a binary, \'netwide assembler with SSE2 patch\' package which is an indispensable compiler was not found.
+		echo It is necessary to install the software.
+		echo Please see \'http://homepage1.nifty.com/herumi/soft.html\' for more information.
+		exit 0
+	fi
+fi
+
+dnl Checks for strip
+AC_CHECK_PROGS( STRIP, strip )
+
+dnl Checks for rm
+AC_CHECK_PROGS( RM, rm )
+
+dnl Checks for libraries.
+dnl Replace `main' with a function in -lm:
+AC_CHECK_LIB(m, main)
+
+dnl Replace `main' with a function in -lpthread:
+AC_CHECK_LIB(pthread, main)
+
+dnl Checks for header files.
+AC_HEADER_STDC
+AC_CHECK_HEADERS(fcntl.h limits.h sys/time.h unistd.h)
+
+dnl Checks for typedefs, structures, and compiler characteristics.
+AC_C_CONST
+if test "${GCC}" = "yes"; then
+	AC_MSG_CHECKING(version of GCC)
+	GCC_version=`${CC} --version`
+	AC_MSG_RESULT(${GCC_version})
+	AC_MSG_CHECKING(optimization of GCC)
+	CFLAGS="-Wall -pipe"
+	case "${GCC_version}" in
+	2.96*)
+        	# for buggy version of gcc shipped with RH7.1, back of on some
+        	# optimizations
+        	OPTIMIZATION="-O -fomit-frame-pointer -ffast-math \
+			-funroll-loops"
+        	;;
+	3.0.3)
+		# -funroll-loops seems to produce buggy code with gcc 3.0.3
+		OPTIMIZATION="-O -fomit-frame-pointer -ffast-math \
+			-maccumulate-outgoing-args"
+		;;
+	3.*)
+		# -funroll-loops seems to produce buggy code with gcc 3.0.3
+		OPTIMIZATION="-O -fomit-frame-pointer -ffast-math \
+			-funroll-loops -maccumulate-outgoing-args"
+		;;
+	*)
+		# default
+		OPTIMIZATION="-O3 -fomit-frame-pointer -ffast-math \
+			-funroll-loops"
+		;;
+	esac
+	AC_MSG_RESULT(${OPTIMIZATION})
+fi
+AC_TYPE_SIZE_T
+AC_HEADER_TIME
+AC_CHECK_SIZEOF(char,1)
+AC_CHECK_SIZEOF(short,2)
+AC_CHECK_SIZEOF(unsigned short,2)
+AC_CHECK_SIZEOF(int,4)
+AC_CHECK_SIZEOF(unsigned int,4)
+AC_CHECK_SIZEOF(long,4)
+AC_CHECK_SIZEOF(unsigned long,4)
+AC_CHECK_SIZEOF(void *,4)
+AC_CHECK_SIZEOF(float,4)
+AC_CHECK_SIZEOF(double,8)
+AC_CHECK_SIZEOF(long double)
+
+dnl Checks for library functions.
+AC_FUNC_MEMCMP
+AC_TYPE_SIGNAL
+AC_FUNC_VPRINTF
+AC_CHECK_FUNCS(strtod strtol)
+
+dnl libsnd
+AC_MSG_CHECKING(use of libsnd)
+AC_ARG_ENABLE(libsnd, 
+  [  --disable-libsnd          Exclude Erik de Castro Lopo's libsndfile],
+  [USE_LIBSNDIO="${enableval}"], [USE_LIBSNDIO="yes"])
+AC_SUBST(USE_LIBSNDIO)
+AC_MSG_RESULT(${USE_LIBSNDIO})
+
+dnl debug option
+AC_MSG_CHECKING(for debug options)
+AC_ARG_ENABLE(debug,
+  [  --enable-debug   Enable debugging (disables optimizations)],
+  CONFIG_DEBUG="${enableval}", CONFIG_DEBUG="no")
+if test "x$GCC" = "xyes"; then
+	case "${CONFIG_DEBUG}" in
+	yes)
+		CFLAGS="${CFLAGS} -DDEBUG"
+		OPTIMIZATION="-O -g -Wall -fno-builtin"
+		;;
+	*)
+		CFLAGS="${CFLAGS} -DNDEBUG"
+	esac
+
+	AC_MSG_RESULT(${CONFIG_DEBUG})
+else
+	CFLAGS="${CFLAGS} -DNDEBUG"
+	AC_MSG_RESULT(no)
+fi
+
+CFLAGS="${OPTIMIZATION} ${CFLAGS}"
+AC_SUBST(AFLAGS)
+
+AC_PROG_INSTALL
+AC_OUTPUT(Makefile)

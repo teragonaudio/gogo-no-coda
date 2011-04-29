@@ -1,0 +1,29 @@
+; GOGO_DLL.def : DLL 用のモジュール パラメータ宣言
+
+LIBRARY      "GOGO"
+DESCRIPTION  'GOGO Dynamic Link Library'
+
+EXPORTS
+    ; 明示的なエクスポートはここへ記述できます
+
+	MPGE_initializeWork		@100
+	MPGE_setConfigure		@101
+	MPGE_getConfigure		@102
+	MPGE_detectConfigure	@103
+	MPGE_processFrame		@104
+	MPGE_closeCoder			@108
+	MPGE_endCoder			@105
+	MPGE_getVersion			@106
+	MPGE_getUnitStates		@107
+
+	MPGE_initializeWorkVB	@200
+	MPGE_setConfigureVB		@201
+	MPGE_getConfigureVB		@202
+	MPGE_detectConfigureVB	@203
+	MPGE_processFrameVB		@204
+	MPGE_closeCoderVB		@208
+	MPGE_endCoderVB			@205
+	MPGE_getVersionVB		@206
+	MPGE_getUnitStatesVB	@207
+
+

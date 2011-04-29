@@ -1,0 +1,71 @@
+#!/bin/bash
+#
+# usage: cdda2mp3 [-q quality] [-a] [-v number] [name_prefix_for_all_mp3_files [1 2 3...]]
+#
+
+encode()
+{
+  $CDDA2WAV $CDDA2WAV_OPTS -t$TRACK - 2> /dev/null | $MP_CODER $MP_OPTIONS stdin $FILEPREFIX$TRACK.mp3
+
+  # check result code
+  RES=$?
+  if [ $RES = 0 ] ; then
+    echo File $FILEPREFIX$TRACK.mp3 finished successfully.
+  else
+    echo File $FILEPREFIX$TRACK.mp3 failed \(result $RES\). >&2
+    mv -f $FILEPREFIX$TRACK.mp3 $FILEPREFIX$TRACK.failed
+  fi
+}
+
+# specify the audio track listing program and its options
+LAT=list_audio_tracks
+LAT_OPTIONS='-D0,1,0 -A/dev/sr1 -Igeneric_scsi'
+
+CDDA2WAV=cdda2wav
+CDDA2WAV_OPTS='-D0,1,0 -A/dev/sr1 -Igeneric_scsi -H -q -Owav -P0'
+
+MP_CODER='gogo'
+MP_OPTIONS=''
+
+while [ $# -gt 0 ]; do
+  if [ x"$1" = x"-a" ] ; then
+    export MP_OPTIONS="$MP_OPTIONS -a"
+    shift
+  elif [ x"$1" = x"-q" ] ; then
+    shift
+    export MP_OPTIONS="$MP_OPTIONS -q $1"
+    shift
+  elif [ x"$1" = x"-v" ] ; then
+    shift
+    export MP_OPTIONS="$MP_OPTIONS -v $1"
+    shift
+  elif [ x"$1" = x"-dev" ] ; then
+    shift
+    export CDDA_DEVICE=$1
+    shift
+  else
+    break
+  fi
+done
+
+
+if [ $# = 0 ];then
+  FILEPREFIX=audiotrack
+else
+  FILEPREFIX=$1
+  shift
+fi
+
+if [ $# = 0 ];then
+  # feed track numbers and start sectors into loop
+  $LAT $LAT_OPTIONS 2> /dev/null | while read TRACK STARTSECTOR;
+  do
+    encode
+  done
+else
+  for TRACK in $@
+  do
+    encode
+  done
+fi
+
