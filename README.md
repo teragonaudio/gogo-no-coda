@@ -40,12 +40,13 @@ This source includes Japanese characters in comments, so please delete or transl
 
   Convert all EOLs to a single LF.
 
-  `% cd linux
-  % make`
+`% cd linux
+
+% make`
 
   For Windows32 console
 
-  open gogo.dsw (for only VC++6.0 with SP4,5)
+`open gogo.dsw` (for only VC++6.0 with SP4,5)
 
 HOW TO USE
 ==========
@@ -61,7 +62,9 @@ HOW TO USE
   main options:
 
   -b kbps    : bitrate[kbps] 128(default)
+
              32,40,48,56,64,80,96,112,128,160,192,224,256,320 if 32/44.1/48kHz
+
              8,16,24,32,40,48,56,64,80,96,112,128,144,160 if 16/22.05/24kHz
 
   -v {0,1,..,9} 0:high        9:low
