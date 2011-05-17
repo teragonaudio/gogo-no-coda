@@ -40,8 +40,7 @@ This source includes Japanese characters in comments, so please delete or transl
 
   Convert all EOLs to a single LF.
 
-`% cd linux`
-`% make`
+`% cd linux ; make`
 
   For Windows32 console
 
