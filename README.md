@@ -18,10 +18,11 @@ Gogo-no-coda is distributed under the LGPL. The modifications are distributed un
 You can use gogo in your commercial program under the restrictions of the LGPL. You can include a compiled version of gogo library (Ex. gogo.dll) with a commercial program. In your program, you can't include any source code from gogo, with the exception of files whose only purpose is to describe the library interface (such as gogo.h).
 
 Any modifications of gogo must be released under the LGPL. You must give prominent notice that your program is:
-  1. using gogo including version
-  2. gogo is under the LGPL
-  3. provide a copy of the LGPL
-  4. provide a copy of gogo source, or a pointer where the gogo source can be obtained
+
+1. using gogo including version
+2. gogo is under the LGPL
+3. provide a copy of the LGPL
+4. provide a copy of gogo source, or a pointer where the gogo source can be obtained
 
 HOW TO MAKE
 ===========
@@ -29,17 +30,18 @@ HOW TO MAKE
 Convert all EOLs to CRLF.
 
 You need a pathced NASM-0.98 to assemble SSE2.
-  * http://ww1.tiki.ne.jp/~hino/nasmw098_sse2.zip (including Windows-binary)
-  * http://homepage1.nifty.com/herumi/soft/petit/nasmsse2.tgz (only Linux-binary)
+
+* http://ww1.tiki.ne.jp/~hino/nasmw098_sse2.zip (including Windows-binary)
+* http://homepage1.nifty.com/herumi/soft/petit/nasmsse2.tgz (only Linux-binary)
 
 This source includes Japanese characters in comments, so please delete or translate them.
   
-  For Linux
+  For Linux:
 
   Convert all EOLs to a single LF.
 
-  % cd linux
-  % make
+  `% cd linux
+  % make`
 
   For Windows32 console
 
@@ -51,9 +53,10 @@ HOW TO USE
   gogo [options] input.wav [output.mp3]
 
   input.wav  : input wave file
-               if input.wav is `stdin' then GOGO reads from stdin.
+               if input.wav is 'stdin' then GOGO reads from stdin.
+
   output.mp3 : output mp3 file
-               if you omit this, `input.mp3' is used.
+               if you omit this, 'input.mp3' is used.
 
   main options:
 
@@ -68,17 +71,16 @@ HOW TO USE
 ACKNOWLEDGEMENTS
 ================
 
- LAME (http://www.mp3dev.org/mp3/) is a wonderful mp3-encoder.
- NASM (http://www.web-sites.co.uk/nasm/),
- doxygen (http://www.stack.nl/~dimitri/doxygen/),
- ruby (http://www.ruby-lang.org/),
- and
- htmlsplit.rb(http://www.moonwolf.com/ruby/) .
+* LAME (http://www.mp3dev.org/mp3/) is a wonderful mp3-encoder
+* NASM (http://www.web-sites.co.uk/nasm/)
+* doxygen (http://www.stack.nl/~dimitri/doxygen/)
+* ruby (http://www.ruby-lang.org/)
+* htmlsplit.rb (http://www.moonwolf.com/ruby/)
 
 We fully thank these developers.
 
 NEWER VERSION
 =============
 
-  * http://homepage2.nifty.com/kei-i/
-  * http://www.marinecat.net/
+* http://homepage2.nifty.com/kei-i/
+* http://www.marinecat.net/
